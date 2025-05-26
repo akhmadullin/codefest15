@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демка про INP</title>
+    <link rel="stylesheet" href="../../lib/click-point-shower/styles.css">
+</head>
+<body>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: rgb(40, 42, 46);
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .block {
+            background-color: rgb(77, 81, 87);
+            border-radius: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .block_for-grid {
+            height: 50px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__circle {
+            border-radius: 50%;
+            flex: 0 0 30px;
+            height: 30px;
+            background-color: rgb(77, 81, 87);
+        }
+
+        .logo__text {
+            min-width: 50px;
+            max-width: 75px;
+            flex: 1 1 75px;
+            height: 20px;
+            background-color: rgb(77, 81, 87);
+            border-radius: 6px;
+        }
+
+        .burger {
+            flex-shrink: 0;
+            display: block;
+            position: relative;
+            border: none;
+            background: transparent;
+            width: 30px;
+            height: 26px;
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            left: 0;
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 4px;
+            border-radius: 10px;
+            background: rgb(77, 81, 87);
+        }
+
+        .burger::before {
+            top: 0;
+            box-shadow: 0 11px 0 rgb(77, 81, 87);
+        }
+
+        .burger::after {
+            bottom: 0;
+        }
+
+        .dialog {
+            border: 3px solid #fefefe;
+            border-radius: 16px;
+            background-color: rgb(89 93 99);
+            color: white;
+        }
+
+        .dialog::backdrop {
+            background-color: rgba(44, 71, 86, 0.7);
+            backdrop-filter: blur(2px);
+        }
+
+        .button {
+            border: 2px solid #fefefe;
+            border-radius: 6px;
+            background-color: rgb(77, 81, 87);
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: rgb(54, 56, 62);
+        }
+    </style>
+    <div class="container">
+        <div class="header mb-20">
+            <div class="logo">
+                <div class="logo__circle"></div>
+                <div class="logo__text"></div>
+            </div>
+            <div class="burger"></div>
+        </div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="block mb-20" style="height: 100px;"></div>
+        <div class="grid mb-20">
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+        </div>
+        <div class="mb-20">
+            <button id="dialog-openner" class="button">Открыть модалку</button>
+        </div>
+        <dialog id="my-dialog" class="dialog" inert="true">
+            <h3>Открываюсь шустро <span style="font-size: 1.5em;">🐆</span></h3>
+        </dialog>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="block mb-20" style="height: 100px;"></div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="block" style="height: 100px;"></div>
+    </div>
+    <script src="../../lib/click-point-shower/index.js"></script>
+    <script>
+        const clickPointShower = new ClickPointShower({ color: 'light' });
+        clickPointShower.startWatching();
+        const dialogOpenner = document.querySelector('#dialog-openner');
+        const dialog = document.querySelector('#my-dialog');
+
+        dialog.showModal();
+
+        const closeOnOutsideClick = (event) => {
+            const modalDimensions = dialog?.getBoundingClientRect();
+            if (
+                event.clientX < modalDimensions.left ||
+                event.clientX > modalDimensions.right ||
+                event.clientY < modalDimensions.top ||
+                event.clientY > modalDimensions.bottom
+            ) {
+                setTimeout(() => {
+                    dialog?.close();
+                }, 100);
+            }
+        };
+
+        dialog.addEventListener('click', closeOnOutsideClick);
+
+        dialogOpenner?.addEventListener('click', () => {
+            setTimeout(() => {
+                dialog?.showModal();
+            }, 150);
+        });
+    </script>
+</body>
+</html>

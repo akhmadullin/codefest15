@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демка про INP</title>
+    <link rel="stylesheet" href="../../lib/pressed-key-shower/styles.css">
+</head>
+<body>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: rgb(40, 42, 46);
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .block {
+            background-color: rgb(77, 81, 87);
+            border-radius: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .block_for-grid {
+            height: 50px;
+        }
+
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__circle {
+            border-radius: 50%;
+            flex: 0 0 30px;
+            height: 30px;
+            background-color: rgb(77, 81, 87);
+        }
+
+        .logo__text {
+            min-width: 50px;
+            max-width: 75px;
+            flex: 1 1 75px;
+            height: 20px;
+            background-color: rgb(77, 81, 87);
+            border-radius: 6px;
+        }
+
+        .burger {
+            flex-shrink: 0;
+            display: block;
+            position: relative;
+            border: none;
+            background: transparent;
+            width: 30px;
+            height: 26px;
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            left: 0;
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 4px;
+            border-radius: 10px;
+            background: rgb(77, 81, 87);
+        }
+
+        .burger::before {
+            top: 0;
+            box-shadow: 0 11px 0 rgb(77, 81, 87);
+        }
+
+        .burger::after {
+            bottom: 0;
+        }
+
+        .input {
+            box-sizing: border-box;
+            padding: 6px 12px;
+            width: 100%;
+            border: 2px solid #eeeeee;
+            border-radius: 6px;
+            background-color: rgb(77, 81, 87);
+            font-size: inherit;
+        }
+
+        .card {
+            border: 3px solid rgb(77, 81, 87);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .card__header {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .card__header__block {
+            height: 40px; 
+            flex: 1 0 auto;
+        }
+
+        .image {
+            width: 40px;
+            height: 40px;
+        }
+
+        #search-input {
+            opacity: 0;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 1px;
+            height: 1px;
+        }
+
+        #search-input:focus-visible + #search-input-2 {
+            outline: -webkit-focus-ring-color auto 1px;
+        }
+    </style>
+    <div class="container">
+        <div class="header mb-20">
+            <div class="logo">
+                <div class="logo__circle"></div>
+                <div class="logo__text"></div>
+            </div>
+            <div class="burger"></div>
+        </div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="mb-10">
+            <!-- <div class="block" style="width: 45%; height: 20px;"></div> -->
+            <label for="search-input">Поисковый запрос</label>
+        </div>
+        
+        <input type="text" id="search-input" autocomplete="off" tabindex="-1" class="input mb-20" />
+
+        <input type="text" placeholder="Например, попугаи" id="search-input-2" autocomplete="off" class="input mb-20" />
+
+        <div id="search-results" class="cards">
+            <!-- <div class="card mb-20">
+                <div class="card__header mb-10">
+                    <img src="./images/image.png" class="image" />
+                    <div class="block card__header__block"></div>
+                </div>
+                <div class="block mb-10" style="height: 20px"></div>
+                <div class="block" style="height: 20px"></div>
+            </div> -->
+        </div>
+        <!-- <div class="block mb-20" style="height: 100px;"></div>
+        <div class="grid mb-20">
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+            <div class="block block_for-grid"></div>
+        </div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="block mb-20" style="height: 100px;"></div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="block" style="height: 100px;"></div> -->
+    </div>
+    <script src="../../lib/pressed-key-shower/index.js"></script>
+    <script>
+        const pressedKeyShower = new PressedKeyShower();
+    </script>
+    <script>
+        function throttle(func, delay) {
+            let isThrottled = false;
+            let savedArgs;
+            let savedThis;
+
+            function wrapper(tthis) {
+                if (isThrottled) {
+                    savedArgs = arguments;
+                    savedThis = tthis;
+                    return;
+                }
+
+                func.apply(tthis, arguments);
+
+                isThrottled = true;
+
+                setTimeout(() => {
+                    isThrottled = false;
+                    if (savedArgs) {
+                        wrapper.apply(savedThis, savedArgs);
+                        savedArgs = null;
+                        savedThis = null;
+                    }
+                }, delay);
+            }
+
+            return wrapper;
+        }
+
+        function debounce(callee, timeoutMs) {
+            return function perform(...args) {
+                let previousCall = this.lastCall
+
+                this.lastCall = Date.now()
+
+                if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+                clearTimeout(this.lastCallTimer)
+                }
+
+                this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
+            }
+        }
+
+        function sleep(timeToSleep) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < timeToSleep);
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        let inputValue = '';
+
+        const inputField = document.querySelector('#search-input');
+        const inputField2 = document.querySelector('#search-input-2');
+
+        // let shouldRefocus = false;
+
+        // inputField2.addEventListener('focus', (e) => {
+        //     if (shouldRefocus) {
+        //         inputField.focus();
+        //         shouldRefocus = true;
+        //     }
+        // });
+        
+
+        
+
+        // inputField.addEventListener('blur', () => {
+        //     shouldRefocus = false;
+        // });
+
+        // inputField2.addEventListener('blur', () => {
+        //     shouldRefocus = false;
+        // });
+
+        // inputField2.addEventListener('beforeinput', (e) => {
+        //     if (e.target.value === '') {
+        //         inputField.value = e.data;
+        //         // const selectionStart = inputField2.selectionStart;
+        //         // const selectionEnd = inputField2.selectionEnd;
+        //         // const selectionDirection = inputField2.selectionDirection;
+        //         inputField.focus();
+        //         // inputField.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+        //         e.preventDefault();
+        //     }
+        // });
+
+        inputField2.addEventListener('input', (e) => {
+            inputField.value = inputField2.value;
+            // 
+            inputValue = inputField2.value
+            // 
+            const selectionStart = inputField2.selectionStart;
+            const selectionEnd = inputField2.selectionEnd;
+            const selectionDirection = inputField2.selectionDirection;
+            inputField.focus();
+            inputField.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+        });
+
+
+        const searchResults = document.querySelector('#search-results');
+
+        const resetSearchResults = () => {
+            if (!searchResults) {
+                return;
+            }
+            searchResults.innerHTML = '';
+        };
+
+        const renderSearchResults = () => {
+            if (!searchResults) {
+                return;
+            }
+
+            if (inputField.value.trim().length === 0) {
+                return;
+            }
+
+            let result = `
+                <div class="mb-20">
+                    Результаты поиска
+                </div>
+            `;
+
+            Array.from({length: getRandomInt(3) + 1}).forEach(() => {
+                result += `
+                    <div class="card mb-20">
+                        <div class="card__header mb-10">
+                            <img src="./images/image.png" class="image" />
+                            <div class="block card__header__block"></div>
+                        </div>
+                        <div class="block mb-10" style="height: 20px"></div>
+                        <div class="block" style="height: 20px"></div>
+                    </div>
+                `
+            });
+
+            searchResults.innerHTML = result;
+        };
+
+        const syncInput2 = () => {
+            inputField2.value = inputField.value;
+            // 
+            inputValue = inputField.value
+            // 
+            const selectionStart = inputField.selectionStart;
+            const selectionEnd = inputField.selectionEnd;
+            const selectionDirection = inputField.selectionDirection;
+            // shouldRefocus = false;
+            inputField2.focus();
+            inputField2.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+        }
+
+        const syncInput2AndRenderResult = () => {
+            syncInput2();
+
+            renderSearchResultsDebounced();
+        };
+
+
+        const syncInput2AndRenderResultDebounced = debounce(syncInput2AndRenderResult, 700);
+
+        const renderSearchResultsDebounced = debounce(renderSearchResults, 1200);
+
+        const callback = throttle(() => {
+            resetSearchResults();
+            
+            syncInput2AndRenderResultDebounced();
+            // renderSearchResultsDebounced();
+        }, 2000);
+
+
+        // inputField?.addEventListener('input', (e) => {
+        inputField?.addEventListener('input', (e) => {
+            callback();
+        });
+        inputField?.addEventListener('change', (e) => {
+            callback();
+        });
+
+        pressedKeyShower.watch();
+        // inputField.addEventListener('input', (e) => {
+        //     pressedKeyShower.showText(inputValue);
+        // });
+        // inputField2.addEventListener('input', (e) => {
+        //     pressedKeyShower.showText(inputValue);
+        // });
+    </script>
+</body>
+</html>

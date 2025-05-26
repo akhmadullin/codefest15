@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Web Vitals: что это и как мы их собираем?</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/styles.css">
+    <link rel="stylesheet" href="./lib/highlight/styles/vs2015.min.css">
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            font-weight: 400;
+            src: url(./fonts/Montserrat/Montserrat-Regular.woff2)
+                format("woff2");
+        }
+
+        @font-face {
+            font-family: 'Montserrat';
+            font-weight: 700;
+            src: url(./fonts/Montserrat/Montserrat-Bold.woff2)
+                format("woff2");
+        }
+
+        @font-face {
+            font-family: 'Montserrat';
+            font-weight: 900;
+            src: url(./fonts/Montserrat/Montserrat-Black.woff2)
+                format("woff2");
+        }
+        .shower {
+            --slide-ratio: calc(16 / 9);
+            --color-additional: #32a3dc;
+            --color-black: #000;
+        }
+
+        .slide {
+            background-color: rgb(22, 22, 22);
+        }
+
+        .slide::after {
+            height: auto;
+            width: calc(var(--ribbon-size)* 1.5);
+            background-color: var(--color-additional);
+            color: black;
+            background-image: none;
+            margin-top: 1em;
+            padding-right: 0.5em;
+            padding-top: 0;
+            left: auto;
+            right: 0;
+        }
+
+        .progress::before {
+            background-color: var(--color-additional);
+        }
+
+        .slide.without-progress.active ~ .progress {
+            display: none;
+        }
+
+        header.caption h1 {
+            font-family: 'Montserrat';
+            font-size: 0.8em;
+        }
+
+        .slide h2 {
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .shower {
+            font: 25px/2 'Montserrat', sans-serif;
+            color: white;
+        }
+
+        #intro::after,
+        #about-me::after,
+        #the-end::after {
+            display: none;
+        }
+
+        #intro {
+            background-color: #000;
+        }
+
+        #the-end {
+            background-color: #011b3a;
+        }
+
+        .intro-image {
+            height: 90%;
+            object-fit: contain;
+            position: absolute;
+            right: -16%;
+            bottom: 0;
+        }
+
+        .intro-image-2 {
+            height: 110%;
+            object-fit: contain;
+            position: absolute;
+            right: -10%;
+            bottom: -19%;
+        }
+
+        .intro-text {
+            position: relative;
+        }
+
+        .centered-slide-title {
+            width: 100%;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .slide ul > li:lang(ru)::before {
+            content: "›";
+            font-size: 1.4em;
+            line-height: 1.3;
+            color: white;
+        }
+
+        .slide ul.plus-minus-list > li:lang(ru)::before {
+            line-height: 36px;
+        }
+
+        .slide ul.plus-minus-list {
+            line-height: 40px;
+        }
+
+        .slide_plus-minus-list {
+            padding: 30px 30px 0 75px;
+        }
+
+        .slide_plus-minus-list__title,
+        .slide_agregation__title,
+        .slide_lab-field-npm__title {
+            margin: 0 0 10px;
+            font-size: 1.3em;
+        }
+
+        .without-margins {
+            margin: 0;
+        }
+
+        #about-me h2 {
+            margin-left: -30px;
+        }
+
+        .two-mobile-devices-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90%; 
+        }
+
+        .mobile-device-iframe {
+            height: 100%;
+            border-radius: 20px;
+            background-color: rgb(40, 42, 46);
+        }
+
+        .metric-border-values-image {
+            height: 90%;
+        }
+
+        .metric-border-values-image-my {
+            height: 70%;
+        }
+
+        .base-button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: rgb(40, 42, 46);
+            color: white;
+            border: 2px solid #cdcdcd;
+            cursor: pointer;
+            transition: background-color 150ms ease-in-out;
+            font-weight: bold;
+        }
+
+        .base-button:not(:disabled):hover {
+            background-color: rgb(54, 56, 62);
+        }
+
+        .base-button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .one-iframe-container {
+            display: flex;
+            height: 90%; 
+            gap: 40px;
+            margin-top: -20px;
+        }
+
+        .one-iframe-container_iframe-wrapper {
+            flex: 1 1 65%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .one-iframe-container_controls-wrapper {
+            flex: 1 1 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .example-title-label {
+            font-weight: bold;
+            font-size: 0.7em;
+            color: #888888;
+            line-height: 1;
+        }
+
+        .example-title-value {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .several-iframes-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            height: 90%; 
+            margin-top: -40px;
+        }
+
+        .several-iframes-row > * {
+            flex: 1 0 0px;
+            min-width: 0;
+        }
+
+        .slide pre code {
+            line-height: 1.4;
+            font-size: 0.9em;
+        }
+
+        .muted {
+            opacity: 0.4;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .accented {
+            color: #00A3E9;
+        }
+
+        .slide-with-table {
+            padding-top: 40px;
+        }
+
+        .slide th.th-short-column {
+            width: 150px;
+            text-align: center;
+        }
+
+        table tbody tr td:first-child {
+            font-size: 0.9em;
+        }
+
+        .slide td.td-with-icon {
+            text-align: center;
+        }
+
+        .light-image {
+            opacity: 0.9;
+        }
+
+        .scheme-psi {
+            height: 80%;
+        }
+
+        .scheme-rum {
+            width: 80%;
+        }
+
+        .scheme-lib-rum {
+            width: 80%;
+        }
+
+        .scheme-vector {
+            height: 80%;
+        }
+
+        a.copyright {
+            color: var(--color-black);
+            padding: 0.2em 0.7em;
+            background-color: var(--color-additional);
+            border-radius: 1em;
+            background-image: none;
+            line-height: 1.6;
+        }
+
+        a.copyright:hover, a.copyright:focus {
+            opacity: 1;
+        }
+
+        .metric-list-item {
+            display: flex;
+            gap: 20px;
+        }
+
+        .metric-list-item__name-short {
+            flex: 0 0 75px;
+            font-weight: bold;
+        }
+
+        .rounded {
+            border-radius: 16px;
+        }
+
+        .rounded-small {
+            border-radius: 6px;
+        }
+
+        .end-bio__links {
+            margin-top: 100px;
+        }
+
+        .end-bio__link-block {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .end-bio__link-logo {
+            width: 40px;
+            height: 40px;
+            flex: none;
+        }
+
+        .slide .end-bio__link {
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 3px;
+        }
+
+        .subheading {
+            color: var(--color-additional);
+            margin: 10px 0 5px
+        }
+
+        .end__subheading {
+            color: var(--color-additional);
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .qr-code {
+            display: block;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body class="shower list">
+    <header class="caption">
+        <h1 style="margin-bottom: 10px;">Web Vitals: что это и как мы их собираем?</h1>
+        <p style="font-weight: bold; margin-bottom: 5px;">Рома Ахмадуллин</p>
+        <p>Дром</p>
+    </header>
+
+    <section id="intro" class="slide">
+        <img src="./images/parrot4x.jpeg" class="intro-image" />
+        <div class="intro-text">
+            <h2 style="margin-top: 270px;margin-bottom: 0; text-transform: uppercase;">Web Vitals</h2>
+            <h3 style="margin-top: 5px; font-weight: normal;">Что это и как мы их собираем?</h3>
+        </div>
+        <img src="./images/codefest-logo.png" class="place t l" alt="" style="width: 64px; top: 15%; left: 10%;">
+    </section>
+
+    <section id="about-me" class="slide">
+        <div class="place l" style="padding-left: 50px;">
+            <img src="./images/roma-akmadullin.jpg" style="height: 280px; border-radius: 50%;" />
+        </div>
+        <div class="place r t" style="padding-top: 156px; padding-right: 70px;">
+            <h2>Рома Ахмадуллин</h2>
+            <ul>
+                <li>фронтенд-разработчик в Дроме</li>
+                <li>контрибьючу в Доку</li>
+                <li>стараюсь приручить попугаев</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="slide">
+        <img src="./images/website.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Performance</h2>
+    </section>
+
+    <section class="slide">
+        <div class="two-mobile-devices-row" style="margin-top: -20px;">
+            <iframe id="example-page-loading-fast" data-src="./demos/fast-page-loading/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <div>
+                <button data-go-button data-connected-iframes="example-page-loading-fast" class="base-button">👈🏻 ГО</button>
+                <button data-go-button data-connected-iframes="example-page-loading-long" class="base-button">ГО 👉🏻</button>
+            </div>
+            <iframe id="example-page-loading-long" data-src="./demos/long-page-loading/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Как оценить объективно?</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/monkey-x4.jpeg" class="place" alt="" style="width: 240px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/google-logo.png" class="place" alt="" style="width: 35%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-0.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-1.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-2.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-3.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-4.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-5.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-web-vitals-5-colored.svg" class="place" style="height: 70%;" alt="">
+    </section>
+
+    <section class="slide">
+        <div class="one-iframe-container">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-ttfb" src="./demos/ttfb/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div class="example-title-label">Этап</div>
+                <div id="example-ttfb_title" class="example-title-value">Not loaded</div>
+                <div>
+                    <button data-continue-button data-connected-iframes="example-ttfb" class="base-button">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="place">TTFB</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Time To First Byte</h2>
+        <a href="https://web.dev/articles/ttfb" class="copyright">Дока про TTFB</a>
+    </section>
+
+    <section class="slide">
+        <div class="several-iframes-row">
+            <iframe src="./demos/fcp-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <div></div>
+        </div>
+        <img src="./images/timeline-start-ttfb.svg" class="place b" style="width: 92%; bottom: 17px;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-0.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-1.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-2.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-3.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-4.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-ttfb-5.svg" class="place" style="height: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/ttfb-formula.svg" class="place" style="width: 70%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/ttfb-borders.svg" class="place metric-border-values-image-my" />
+    </section>
+
+    <section class="slide">
+        <div class="one-iframe-container">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-fcp-continue" src="./demos/fcp-continue/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div class="example-title-label">Этап</div>
+                <div id="example-fcp-continue_title" class="example-title-value">TTFB</div>
+                <div>
+                    <button data-continue-button data-connected-iframes="example-fcp-continue" class="base-button">Продолжить загрузку</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="place">FCP</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">First Contentful Paint</h2>
+        <a href="https://web.dev/articles/fcp" class="copyright">Дока про FCP</a>
+    </section>
+
+    <section class="slide">
+        <div class="several-iframes-row">
+            <iframe src="./demos/fcp-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-2/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/timeline-start-ttfb-fcp.svg" class="place b" style="width: 92%; bottom: 17px;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/fcp-borders.svg" class="place metric-border-values-image-my" />
+    </section>
+
+    <section class="slide">
+        <div class="one-iframe-container">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-lcp-continue" src="./demos/lcp-continue/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div class="example-title-label">Этап</div>
+                <div id="example-lcp-continue_title" class="example-title-value">FCP</div>
+                <div>
+                    <button data-continue-button data-connected-iframes="example-lcp-continue" class="base-button">Продолжить загрузку</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="place">LCP</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Largest Contentful Paint</h2>
+        <a href="https://web.dev/articles/lcp" class="copyright">Дока про LCP</a>
+    </section>
+
+    <section class="slide">
+        <div class="several-iframes-row">
+            <iframe src="./demos/fcp-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-2/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/lcp___1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/timeline-start-ttfb-fcp-lcp.svg" class="place b" style="width: 92%; bottom: 10px;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/lcp-borders.svg" class="place metric-border-values-image-my" />
+    </section>
+
+    <section class="slide">
+        <div class="one-iframe-container">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-lcp-after-continue" src="./demos/lcp_after-lcp-continue/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div class="example-title-label">Этап</div>
+                <div id="example-lcp-after-continue_title" class="example-title-value">LCP</div>
+                <div>
+                    <button data-continue-button data-connected-iframes="example-lcp-after-continue" class="base-button">Продолжить загрузку</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="several-iframes-row" style="margin-left: -80px; margin-right: -80px;">
+            <iframe src="./demos/fcp-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-2/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/lcp___1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/lcp_after-lcp__1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/timeline-start-ttfb-fcp-lcp-load.svg" class="place b" style="width: 95%; bottom: 10px;" alt="">
+    </section>
+
+    <section class="slide">
+        <div class="several-iframes-row" style="margin-left: -80px; margin-right: -80px;">
+            <iframe src="./demos/fcp-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/fcp-2/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/lcp___1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/lcp_after-lcp__1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/timeline-start-ttfb-fcp-lcp-load.svg" class="place b" style="width: 95%; bottom: 10px;" alt="">
+        <img src="./images/web-vitals-3-arrows.svg" class="place b" style="height: 35%; bottom: 15%;" alt="">
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">А где же CLS и INP?</h2>
+        <img src="./images/parrot-with-arms.png" class="place l" alt="" style="height: 49%; top: 79%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">CLS</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Cumulative Layout Shift</h2>
+        <a href="https://web.dev/articles/cls" class="copyright">Дока про CLS</a>
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="one-iframe-container" style="margin-top: 0;">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-cls-ads" data-src="./demos/cls-ads/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div>
+                    <button data-go-button data-connected-iframes="example-cls-ads" class="base-button">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row">
+            <iframe src="./demos/cls-ads-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/cls-ads-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/layout-shift-3.svg" class="place" style="height: 195px; top: 37%;" alt="">
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="one-iframe-container" style="margin-top: 0;">
+            <div class="one-iframe-container_iframe-wrapper">
+                <iframe id="example-cls-images" data-src="./demos/cls-images/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            </div>
+            <div class="one-iframe-container_controls-wrapper">
+                <div>
+                    <button data-go-button data-connected-iframes="example-cls-images" class="base-button">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row" style="height: 95%;">
+            <iframe src="./demos/cls-images-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/cls-images-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/cls-arrows-1.svg" class="place r" alt="" style="top: 27%; right: 24.5%; width: 58px;">
+        <img src="./images/cls-arrows-2.svg" class="place r" alt="" style="top: 54%; right: 24.5%; width: 53px;">
+        <img src="./images/cls-arrows-3.svg" class="place r" alt="" style="top: 81%; right: 24.5%; width: 58px;">
+        <img src="./images/cls-arrows-ls-1.svg" class="place" alt="" style="width: 21%; top: 35%;">
+        <img src="./images/cls-arrows-ls-2.svg" class="place" alt="" style="width: 21%; top: 59%;">
+        <img src="./images/cls-arrows-ls-3.svg" class="place" alt="" style="width: 21%; top: 84%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/cls-sum.svg" class="place" style="height: 60%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/cls-borders.svg" class="place metric-border-values-image-my" />
+    </section>
+
+    <section class="slide">
+        <h2 class="place">INP</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Interaction to Next Paint</h2>
+        <a href="https://web.dev/articles/inp" class="copyright">Дока про INP</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-what-is-interaction-0.svg" class="place" style="height:70%; left:54%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-what-is-interaction-1.svg" class="place" style="height:70%; left:54%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-what-is-interaction-2.svg" class="place" style="height:70%; left:54%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/scheme-what-is-interaction-3.svg" class="place" style="height:70%; left:54%;" alt="">
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row">
+            <iframe src="./demos/inp-modal-fast/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/inp-modal-long/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row">
+            <iframe src="./demos/inp-modal-fast-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/inp-modal-fast-1/index.html" frameborder="0" class="mobile-device-iframe" autofocus="false"></iframe>
+        </div>
+        <img src="./images/interaction-latency.svg" class="place" style="width: 210px;top: 26%;" alt="">
+        <img src="./images/arrow-for-inp-modals.svg" class="place" style="width: 318px; top: 64%; left: 45%;" alt="">
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row">
+            <iframe src="./demos/inp-input-fast/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/inp-input-long/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+    </section>
+
+    <section class="slide" style="padding-top: 40px;">
+        <div class="two-mobile-devices-row">
+            <iframe src="./demos/inp-input-fast-0/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+            <iframe src="./demos/inp-input-fast-1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
+        </div>
+        <img src="./images/interaction-latency.svg" class="place" style="width: 210px;top: 26%;" alt="">
+        <img src="./images/arrow-inp-inputs.svg" class="place" style="width: 445px; top: 58%; left: 37%;" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/inp-formula.svg" class="place" style="height: 50%;" />
+    </section>
+
+    <section class="slide">
+        <img src="./images/inp-borders.svg" class="place metric-border-values-image-my" />
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Браузерная поддержка</h2>
+    </section>
+
+    <section class="slide" style="padding-top: 130px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Метрика</th>
+                    <th class="th-short-column">Chrome</th>
+                    <th class="th-short-column">Firefox</th>
+                    <th class="th-short-column">Safari</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold">TTFB</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td class="bold">FCP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td class="bold">LCP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td class="bold">CLS</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td class="bold">INP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Interop 2025</h2>
+        <a href="https://wpt.fyi/interop-2025" class="copyright">Interop 2025</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/interop-cwv-lcp-inp.svg" class="place" alt="" style="height: 75%;">
+        <a href="https://wpt.fyi/results/?label=master&label=experimental&aligned&view=interop&q=label%3Ainterop-2025-core-web-vitals" class="copyright">Interop 2025: Core Web Vitals</a>
+    </section>
+
+    <section class="slide" style="padding-top: 130px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Метрика</th>
+                    <th class="th-short-column">Chrome</th>
+                    <th class="th-short-column">Firefox</th>
+                    <th class="th-short-column">Safari</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold">TTFB</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td class="bold">FCP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td class="bold">LCP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">( ✅ )</td>
+                </tr>
+                <tr>
+                    <td class="bold">CLS</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td class="bold">INP</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">( ✅ )</td>
+                    <td class="td-with-icon">( ✅ )</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Как считать?</h2>
+        <img src="./images/parrot-calculate.png" class="place b r" alt="" style="width: 250px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-1.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-2.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-3.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-3.svg" class="place" alt="" style="height: 70%;">
+        <img src="./images/parrot-knife-mem.jpg" class="place" alt="" style="width: 150px; top: 29%; rotate: -8deg; left: 52%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Lab Data</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/lighthouse.webp" class="place" alt="" style="width: 33%;">
+        <a href="https://developer.chrome.com/docs/lighthouse/overview" class="copyright">Lighthouse</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/screenshot-lighthouse-3.png" class="place" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/pagespeed-insights.svg" class="place" alt="" style="height: 30%;">
+        <a href="https://pagespeed.web.dev/" class="copyright">PageSpeed Insights</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/ps-score-2.png" class="place light-image" alt="" style="height: 80%; border-radius: 16px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/ps-crux.png" class="place light-image" alt="" style="height: 70%; border-radius: 16px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/ps-recommendations-3.png" class="place light-image" alt="" style="width: 70%; border-radius: 16px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/webpagetest-logo.png" class="place" alt="" style="height: 35%;">
+        <a href="https://www.webpagetest.org/" class="copyright">WebPageTest</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/wpt-run-metrics.jpg" class="place light-image rounded" alt="" style="width:90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/wpt-rum-metrics.jpg" class="place light-image rounded" alt="" style="width:90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/wpt-waterfall.jpg" class="place light-image rounded" alt="" style="height:80%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/wpt-recommendations.jpg" class="place light-image rounded" alt="" style="width:85%;">
+    </section>
+
+    <section class="slide">
+        <h3 class="slide_lab-field-npm__title">npm пакеты</h3>
+        <style>
+            .slide .list-link {
+                color: inherit;
+            }
+
+            .npm-list-container {
+                display: flex;
+                justify-content: space-between;
+            }
+        </style>
+        <div class="npm-list-container">
+            <div>
+                <h4 class="subheading">Lighthouse</h4>
+                <ul>
+                    <li>
+                        <a href="https://www.npmjs.com/package/lighthouse" class="list-link">lighthouse</a>
+                    </li>
+                    <li>
+                        <a href="https://www.npmjs.com/package/@lhci/cli" class="list-link">@lhci/cli</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="subheading">PageSpeed Insights</h4>
+                <ul>
+                    <li>
+                        <a href="https://www.npmjs.com/package/googleapis" class="list-link">googleapis</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="subheading">WebPageTest</h4>
+                <ul>
+                    <li>
+                        <a href="https://www.npmjs.com/package/webpagetest" class="list-link">webpagetest</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Field Data</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/crux-logo.png" class="place" alt="" style="height: 35%;">
+        <a href="https://developer.chrome.com/docs/crux/methodology/tools#tool-gsc" class="copyright">Chrome UX Report</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/crux-core-web-vitals.jpg" class="place light-image rounded" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/crux-inp-2.png" class="place light-image rounded" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/crux-vis.png" class="place light-image rounded" alt="" style="width: 80%;">
+        <a href="https://cruxvis.withgoogle.com/" class="copyright">CrUX Vis</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/crux-vis-ttfb.png" class="place light-image rounded" alt="" style="width: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/sentry-logo.svg" class="place" alt="" style="width: 40%;">
+        <a href="https://docs.sentry.io/product/insights/frontend/web-vitals/" class="copyright">Sentry: Web Vitals</a>
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" >
+                Sentry.init({
+                    // ...
+                    integrations: [
+                      Sentry.browserTracingIntegration({
+                        enableInp: true,
+                      }),
+                    ],
+                });
+            </code>
+        </pre>
+        <a href="https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/" class="copyright">Sentry: tracing</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/sentry-web-vital-hero-image-5.png" class="place light-image rounded" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/sentry-web-vitals-charts-3.png" class="place light-image rounded" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/sentry-waterfall.png" class="place light-image rounded" alt="" style="height: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/by-hands.svg" class="place" alt="" style="height: 40%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Общий флоу</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-1.svg" class="place" alt="" style="width: 80%;">
+    </section>
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-2.svg" class="place" alt="" style="width: 80%;">
+    </section>
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-3.svg" class="place" alt="" style="width: 80%;">
+    </section>
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-4.svg" class="place" alt="" style="width: 80%;">
+    </section>
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-5.svg" class="place" alt="" style="width: 80%;">
+    </section>
+    <section class="slide">
+        <img src="./images/common-metrics-collection-scheme-6.svg" class="place" alt="" style="width: 80%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Сбор метрик</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Performance APIs</h2>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Performance_API" class="copyright">Performance APIs</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/performance-apis-scheme-0.svg" class="place" alt="" style="height: 75%;">
+    </section>
+    <section class="slide">
+        <img src="./images/performance-apis-scheme-1.svg" class="place" alt="" style="height: 75%;">
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const [navigationEntry] = performance.getEntriesByType('navigation');
+
+            if (navigationEntry) {
+                const { responseStart, activationStart } = navigationEntry;
+                const ttfb = responseStart - activationStart;
+                sendToBackend(ttfb);
+            }
+            </code>
+        </pre>
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const [navigationEntry] = performance.getEntriesByType('navigation');
+
+            if (navigationEntry) {
+                const { responseStart, activationStart } = navigationEntry;
+                const ttfb = responseStart - activationStart;
+                sendToBackend(ttfb);
+            }
+            </code>
+        </pre>
+        <img src="./images/arrow-get-navigation-entry.svg" class="place" alt="" style="width: 370px; top: 23%; left: 32%;">
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const [navigationEntry] = performance.getEntriesByType('navigation');
+
+            if (navigationEntry) {
+                const { responseStart, activationStart } = navigationEntry;
+                const ttfb = responseStart - activationStart;
+                sendToBackend(ttfb);
+            }
+            </code>
+        </pre>
+        <img src="./images/arrow-get-navigation-entry.svg" class="place" alt="" style="width: 370px; top: 23%; left: 32%;">
+        <img src="./images/arrow-count-ttfb.svg" class="place b r" alt="" style="width: 340px; bottom: 31%; right: 14%;">
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const [navigationEntry] = performance.getEntriesByType('navigation');
+
+            if (navigationEntry) {
+                const { responseStart, activationStart } = navigationEntry;
+                const ttfb = responseStart - activationStart;
+                sendToBackend(ttfb);
+            }
+            </code>
+        </pre>
+        <img src="./images/arrow-get-navigation-entry.svg" class="place" alt="" style="width: 370px; top: 23%; left: 32%;">
+        <img src="./images/arrow-count-ttfb.svg" class="place b r" alt="" style="width: 340px; bottom: 31%; right: 14%;">
+        <img src="./images/arrow-save.svg" class="place b l" alt="" style="width: 232px; bottom: 20%; left: 27%;">
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lcp = entries[entries.length - 1].startTime;
+                sendToBackend(lcp);
+            });
+
+            observer.observe({
+                type: "largest-contentful-paint",
+                buffered: true,
+            });
+            </code>
+        </pre>
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lcp = entries[entries.length - 1].startTime;
+                sendToBackend(lcp);
+            });
+
+            observer.observe({
+                type: "largest-contentful-paint",
+                buffered: true,
+            });
+            </code>
+        </pre>
+        <img src="./images/arrow-use-observer.svg" class="place" alt="" style="width: 280px; top: 17%; left: 47%;">
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lcp = entries[entries.length - 1].startTime;
+                sendToBackend(lcp);
+            });
+
+            observer.observe({
+                type: "largest-contentful-paint",
+                buffered: true,
+            });
+            </code>
+        </pre>
+        <img src="./images/arrow-use-observer.svg" class="place" alt="" style="width: 280px; top: 17%; left: 47%;">
+        <img src="./images/arrow-buffered.svg" class="place b" alt="" style="width: 346px; bottom: 11%; left: 56%;">
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lcp = entries[entries.length - 1].startTime;
+                sendToBackend(lcp);
+            });
+
+            observer.observe({
+                type: "largest-contentful-paint",
+                buffered: true,
+            });
+            </code>
+        </pre>
+        <img src="./images/arrow-use-observer.svg" class="place" alt="" style="width: 280px; top: 17%; left: 47%;">
+        <img src="./images/arrow-buffered.svg" class="place b" alt="" style="width: 346px; bottom: 11%; left: 56%;">
+        <img src="./images/arrow-lcp-in-last-entry.svg" class="place b r" alt="" style="width: 371px; bottom: 45%; right: 7%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title"><code>npm install web-vitals</code></h2>
+        <a href="https://www.npmjs.com/package/web-vitals" class="copyright">npm: web-vitals</a>
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript">
+            import { onLCP, onINP, onCLS } from 'web-vitals';
+
+            onCLS(sendToBackend);
+            onINP(sendToBackend);
+            onLCP(sendToBackend);
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h3 class="slide_agregation__title">Агрегация и визуализация</h3>
+    </section>
+
+    <section class="slide">
+        <h3 class="slide_agregation__title">Агрегация и визуализация</h3>
+        <ul>
+            <li>готовый бэкенд (Google Analytics, Sentry, ect)</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h3 class="slide_agregation__title">Агрегация и визуализация</h3>
+        <ul>
+            <li class="muted">готовый бэкенд (Google Analytics, Sentry, ect)</li>
+            <li>самописное решение</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h3 class="slide_agregation__title">Агрегация и визуализация</h3>
+        <ul>
+            <li>готовый бэкенд (Google Analytics, Sentry, ect)</li>
+            <li>самописное решение</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Как собираем на Дроме?</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/snake-4x.jpeg" class="place" alt="" style="height: 250px;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/drom-psi.svg" class="place" alt="" style="height: 30%;">
+        <img src="./images/pagespeed-insights.svg" class="place" alt="" style="height: 27%; left: 71%; top: 51%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/drom-psi-1.svg" class="place" alt="" style="height: 30%;">
+        <img src="./images/pagespeed-insights.svg" class="place" alt="" style="height: 27%; left: 71%; top: 51%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/drom-psi-2.svg" class="place" alt="" style="height: 30%;">
+        <img src="./images/pagespeed-insights.svg" class="place" alt="" style="height: 27%; left: 71%; top: 51%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-psi.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">PSI</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Page Speed Insights</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-0.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-1.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-2.svg" class="place scheme-psi" alt="">
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.6em;">
+                // config.js
+                const config = {
+                    ...,
+                    pages: [
+                        { 
+                            id: 'home',
+                            url: 'https://www.drom.ru/',
+                        },
+                        { 
+                            id: 'auto', 
+                            url: 'https://auto.drom.ru/',
+                        },
+                        { 
+                            id: 'auto_brand',
+                            url: 'https://auto.drom.ru/toyota/',
+                        },
+                        { 
+                            id: 'auto_model',
+                            url: 'https://auto.drom.ru/toyota/corolla/',
+                        },
+                        ...,
+                    ],
+                };
+            </code>
+        </pre>
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.6em;">
+                // config.js
+                const config = {
+                    ...,
+                    pages: [
+                        { 
+                            id: 'home',
+                            url: 'https://www.drom.ru/',
+                        },
+                        { 
+                            id: 'auto', 
+                            url: 'https://auto.drom.ru/',
+                        },
+                        { 
+                            id: 'auto_brand',
+                            url: 'https://auto.drom.ru/toyota/',
+                        },
+                        { 
+                            id: 'auto_model',
+                            url: 'https://auto.drom.ru/toyota/corolla/',
+                        },
+                        ...,
+                    ],
+                };
+            </code>
+        </pre>
+        <img src="./images/arrow-url.svg" class="place" alt="" style="height: 50px;left: 80%;top:54%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-2.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-3.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-4.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-5.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-6.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-7.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-8.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-9.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-10.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-11.svg" class="place scheme-psi" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 26%; right: 10%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 26%; right: 10%;">
+        <img src="./images/arrow-loading-experience-by-page.svg" class="place b" alt="" style="bottom: 39%; height: 50px; left: 71%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 33%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 33%; right: 10%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 33%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 33%; right: 10%;">
+        <img src="./images/arrow-separate-page-2.svg" class="place l" alt="" style="width: 310px; top: 18%; left: 18%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-debug-all-audits.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-compare.svg" class="place t" alt="" style="height: 38px;top: 6%;">
+    </section>
+   
+    <section class="slide">
+        <img src="./images/psi-debug-single-audit.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-single-metric.svg" class="place t" alt="" style="height: 38px;top: 11%;left: 63%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/experiments_x2.jpeg" class="place" alt="" style="height: 70%; border-radius: 20px;">
+    </section>
+   
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-experiments-0.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-experiments-1.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-experiments-2.svg" class="place scheme-psi" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-psi-experiments-3.svg" class="place scheme-psi" alt="">
+    </section>
+
+    <section class="slide">
+        <!-- <pre class="place t" style="top: 3%;"> -->
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.8em;">
+                // experiments.js
+                const experimentsConfig = {
+                    no_gtm: {
+                        params: { disablegtm: 1 },
+                    },
+                    no_ads: {
+                        params: { disablead: 1 },
+                    },
+                    no_js: {
+                        params: { disablejsinjector: 1, disableloadablescripts: 1 },
+                    },
+                };
+            </code>
+        </pre>
+    </section>
+   
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.6em;">
+                // config.js
+                const config = {
+                    ...,
+                    pages: [
+                        { 
+                            id: 'auto', 
+                            url: 'https://auto.drom.ru/',
+                        },
+                        ...,
+                    ],
+                };
+
+                // experiments.js
+                const experimentsConfig = {
+                    no_gtm: {
+                        params: { disablegtm: 1 },
+                    },
+                    no_ads: {
+                        params: { disablead: 1 },
+                    },
+                    no_js: {
+                        params: { disablejsinjector: 1, disableloadablescripts: 1 },
+                    },
+                };
+            </code>
+        </pre>
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.6em;">
+                // config.js
+                const config = {
+                    ...,
+                    pages: [
+                        { 
+                            id: 'auto', 
+                            url: 'https://auto.drom.ru/',
+                        },
+                        ...,
+                    ],
+                };
+
+                // experiments.js
+                const experimentsConfig = {
+                    no_gtm: {
+                        params: { disablegtm: 1 },
+                    },
+                    no_ads: {
+                        params: { disablead: 1 },
+                    },
+                    no_js: {
+                        params: { disablejsinjector: 1, disableloadablescripts: 1 },
+                    },
+                };
+            </code>
+        </pre>
+        <img src="./images/url-arrow.svg" class="place r t" alt="" style="height: 45px; right: 21%; top: 28%;">
+    </section>
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript" style="font-size: 0.6em;">
+                // config.js
+                const config = {
+                    ...,
+                    pages: [
+                        { 
+                            id: 'auto', 
+                            url: 'https://auto.drom.ru/',
+                        },
+                        ...,
+                    ],
+                };
+
+                // experiments.js
+                const experimentsConfig = {
+                    no_gtm: {
+                        params: { disablegtm: 1 },
+                    },
+                    no_ads: {
+                        params: { disablead: 1 },
+                    },
+                    no_js: {
+                        params: { disablejsinjector: 1, disableloadablescripts: 1 },
+                    },
+                };
+            </code>
+        </pre>
+        <img src="./images/url-arrow.svg" class="place r t" alt="" style="height: 45px; right: 21%; top: 28%;">
+        <img src="./images/query-params-arrow.svg" class="place r t" alt="" style="height: 80px; right: 19%; top: 52%;">
+    </section>
+    
+    <section class="slide">
+        <pre class="place">
+            <code class="language-javascript hljs" style="font-size: 0.8em;" data-highlighted="yes">
+                <span class="hljs-comment">// auto</span>
+                <span class="hljs-string">'https://auto.drom.ru/'</span>,
+
+                <span class="hljs-comment">// auto no_gtm</span>
+                <span class="hljs-string">'https://auto.drom.ru/?<span class="hljs-attr">disablegtm</span>=<span class="hljs-number">1</span>'</span>,
+
+                <span class="hljs-comment">// auto no_ads</span>
+                <span class="hljs-string">'https://auto.drom.ru/?<span class="hljs-attr">disablead</span>=<span class="hljs-number">1</span></span>,
+
+                <span class="hljs-comment">// auto no_js</span>
+                <span class="hljs-string">'https://auto.drom.ru/?<span class="hljs-attr">disablejsinjector</span>=<span class="hljs-number">1</span>&amp;<span class="hljs-attr">disableloadablescripts</span>=<span class="hljs-number">1</span>'</span>,
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <pre class="place">
+            <code class="language-php">
+        // Controller на стороне Дрома
+        if (queryParams['disablegtm']) {
+            makeA();
+        } else {
+            makeB();
+        }
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-experiments-dashboard.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
+        <img src="./images/arrow-no-gtm.svg" class="place" alt="" style="height: 71px; left: 68%; top: 38%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
+        <img src="./images/arrow-no-gtm.svg" class="place" alt="" style="height: 71px; left: 68%; top: 38%;">
+        <img src="./images/arrow-js-and-gtm.svg" class="place" alt="" style="height: 85px; left: 44%; top: 68%;">
+    </section>
+   
+    <section class="slide">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
+        <img src="./images/arrow-exp-to-all.svg" class="place t" alt="" style="height: 91px;top: 36%;left: 46%;">
+    </section>
+    <section class="slide">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
+        <img src="./images/arrow-exp-to-all.svg" class="place t" alt="" style="height: 91px;top: 36%;left: 46%;">
+        <img src="./images/arrow-deleted.svg" class="place b r" alt="" style="height: 112px; bottom: 27%; right: 44%;">
+    </section>
+
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li>Web Vitals и куча других метрик</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">Web Vitals и куча других метрик</li>
+            <li>итоговый Score</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">Web Vitals и куча других метрик</li>
+            <li class="muted">итоговый Score</li>
+            <li>эксперименты</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented muted">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">Web Vitals и куча других метрик</li>
+            <li class="muted">итоговый Score</li>
+            <li class="muted">эксперименты</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li>эмуляторы</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented muted">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">Web Vitals и куча других метрик</li>
+            <li class="muted">итоговый Score</li>
+            <li class="muted">эксперименты</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">эмуляторы</li>
+            <li>CRUX report – avg за 28 дней и только 75 перцентиль</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented muted">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">Web Vitals и куча других метрик</li>
+            <li class="muted">итоговый Score</li>
+            <li class="muted">эксперименты</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">эмуляторы</li>
+            <li class="muted">CRUX report – avg за 28 дней и только 75 перцентиль</li>
+            <li>определеная страница, а не весь скоуп страниц данного вида</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Page Speed Insights</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li>Web Vitals и куча других метрик</li>
+            <li>итоговый Score</li>
+            <li>эксперименты</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li>эмуляторы</li>
+            <li>CRUX report – avg за 28 дней и только 75 перцентиль</li>
+            <li>определеная страница, а не весь скоуп страниц данного вида</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">🤖 Эмуляторы – OK</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">А что у пользователей?</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/two-chairs-psi-rum.svg" class="place" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">RUM</h2>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Real User Monitoring</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-2.svg" class="place scheme-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-3.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-4.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-5.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-6.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-7.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-8.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-9.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-10.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-11.svg" class="place scheme-rum" alt=""">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-rum-12.svg" class="place scheme-rum" alt=""">
+    </section>
+
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-1.svg" class="place scheme-lib-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-2.svg" class="place scheme-lib-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-3.svg" class="place scheme-lib-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-4.svg" class="place scheme-lib-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-5.svg" class="place scheme-lib-rum" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-sheme-lib-rum-6.svg" class="place scheme-lib-rum" alt="">
+    </section>
+
+    <!-- <section class="slide">
+        <img src="./images/upd-scheme-vector-0.svg" class="place scheme-vector" alt="">
+    </section> -->
+
+    <section class="slide">
+        <img src="./images/vector-logo.svg" class="place" alt="" style="width: 45%;">
+        <a href="https://vector.dev/" class="copyright">Vector</a>
+    </section>
+
+    <section class="slide">
+        <img src="./images/upd-scheme-vector-1.svg" class="place scheme-vector" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-vector-2.svg" class="place scheme-vector" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-vector-3.svg" class="place scheme-vector" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-vector-4.svg" class="place scheme-vector" alt="">
+    </section>
+    <section class="slide">
+        <img src="./images/upd-scheme-vector-5.svg" class="place scheme-vector" alt="">
+    </section>
+
+    <section class="slide">
+        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+    <section class="slide">
+        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
+    </section>
+    <section class="slide">
+        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
+        <img src="./images/arrow-desktop-mobile.svg" class="place" alt="" style="width: 255px; top: 19.5%; left: 37%;">
+    </section>
+    <section class="slide">
+        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
+        <img src="./images/arrow-desktop-mobile.svg" class="place" alt="" style="width: 255px; top: 19.5%; left: 37%;">
+        <img src="./images/arrow-different-percentiles.svg" class="place" alt="" style="width: 280px; top: 72%; left: 79%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded" alt="" style="width: 90%;">
+    </section>
+    <section class="slide">
+        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 29.5%;">
+        <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 63%;">
+        <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 71%;">
+        <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 74%;">
+    </section>
+
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+    </section>
+    
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li>реальные пользователи</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">реальные пользователи</li>
+            <li>вариативность перцентилей</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">реальные пользователи</li>
+            <li class="muted">вариативность перцентилей</li>
+            <li>данные с точностью до дня</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented muted">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">реальные пользователи</li>
+            <li class="muted">вариативность перцентилей</li>
+            <li class="muted">данные с точностью до дня</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li>нет итогового Score'а производительности</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented muted">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">реальные пользователи</li>
+            <li class="muted">вариативность перцентилей</li>
+            <li class="muted">данные с точностью до дня</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li class="muted">нет итогового Score'а производительности</li>
+            <li>нет экспериментов</li>
+        </ul>
+    </section>
+    <section class="slide slide_plus-minus-list">
+        <h3 class="slide_plus-minus-list__title">Real User Monitoring</h3>
+        <h4 class="without-margins accented">Плюсы</h4>
+        <ul class="plus-minus-list">
+            <li>реальные пользователи</li>
+            <li>вариативность перцентилей</li>
+            <li>данные с точностью до дня</li>
+        </ul>
+        <h4 class="without-margins accented">Минусы</h4>
+        <ul class="plus-minus-list">
+            <li>нет итогового Score'а производительности</li>
+            <li>нет экспериментов</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Самый главный вопрос</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/parrot-and-mirror.jpeg" class="place" alt="" style="height: 80%;">
+    </section>
+
+    <section class="slide">
+        <img src="./images/parrot-and-mirror.jpeg" class="place" alt="" style="height: 80%; opacity: 0.2;">
+        <h2 class="place" style="width: 100%; text-align: center; margin-top: 10px;">При чем тут попугаи?</h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/38-popugaev-2-x2.jpeg" class="place" alt="" style="height: 70%; border-radius: 20px;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place">Итоги</h2>
+    </section>
+
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+        </ul>
+    </section>
+    <section class="slide">
+        <h3 class="without-margins" style="margin-bottom: 10px;"><span class="accented">Core</span> Web Vitals</h3>
+        <ul>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Lab data и Field data</h2>
+    </section>
+
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Вариативность перцентилей</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Вариативность перцентилей</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Реальный пользовательский опыт</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Вариативность перцентилей</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Реальный пользовательский опыт</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>CI/CD, процесс разработки</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="muted">
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr class="muted">
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Вариативность перцентилей</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>Реальный пользовательский опыт</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr class="muted">
+                    <td>CI/CD, процесс разработки</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td>Мониторинг перформанса в проде</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="slide slide-with-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    <th class="th-short-column">Lab data</th>
+                    <th class="th-short-column">Field data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Web Vitals</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Другие метрики</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td>Интеграция в код сайта</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Разные устройства и сети</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Разные сценарии и страницы</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Вариативность перцентилей</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>Реальный пользовательский опыт</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+                <tr>
+                    <td>CI/CD, процесс разработки</td>
+                    <td class="td-with-icon">✅</td>
+                    <td class="td-with-icon">❌</td>
+                </tr>
+                <tr>
+                    <td>Мониторинг перформанса в проде</td>
+                    <td class="td-with-icon">❌</td>
+                    <td class="td-with-icon">✅</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide">
+        <img src="./images/parrot-smiles-2.jpg" class="place rounded" alt="" style="height: 70%;">
+    </section>
+
+    <section class="slide">
+        <h2 class="place centered-slide-title">Приготовьте телефоны <span>🤳🏼</span></h2>
+    </section>
+
+    <section class="slide">
+        <img src="./images/tg-channel-ava.png" class="place l rounded" alt="" style="width: 30%; left: 14%;">
+        <img src="./images/qr-code-to-tg-channel.svg" class="place r rounded qr-code" alt="" style="width: 22%; right: 14%;">
+        <a href="https://t.me/roma_akhmadullin" class="copyright">Рома вещает</a>
+    </section>
+
+    <section id="the-end" class="slide without-progress" style="padding: 60px;">
+        <img src="./images/codefest-logo.png" class="place r t" alt="" style="width: 90px; top: 5%; right: 5%;">
+        <div><h2 style="text-transform: uppercase; font-size: 45px;">Всем соточку в лайтхаусе!</h2></div>
+        <div style="display: flex; align-items: center; gap: 20px; margin-top: 65px;">
+            <img src="./images/roma-akmadullin.jpg" alt="" style="border-radius: 50%; width: 100px;">
+            <div>
+                <h3 style="margin: 0; line-height: 1; margin-bottom: 5px;">Рома Ахмадуллин</h3>
+                <p style="margin: 0; line-height: 1;">Дром</p>
+            </div>
+        </div>
+        <div class="end-bio__links place l b" style="left: 6%; bottom: 6%;">
+            <div>
+                <h4 class="end__subheading">Слайды</h4>
+                <div class="end-bio__link-block">
+                    <img src="./images/logo-github-2.svg" alt="" class="end-bio__link-logo" />
+                    <a href="https://github.com/akhmadullin/codefest15" class="end-bio__link">akhmadullin/codefest15</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="end__subheading">Подписаться</h4>
+                <div class="end-bio__link-block">
+                    <img src="./images/logo-telegram.svg" alt="" class="end-bio__link-logo">
+                    <a href="https://t.me/roma_akhmadullin" class="end-bio__link">roma_akhmadullin</a>
+                </div>
+            </div>
+        </div>
+        <div class="place r b" style="width: 22%; bottom: 7%; right: 5%;">
+            <h4 class="end__subheading">Оценить доклад</h4>
+            <img src="./images/qr-code-vote-for-talk.svg" class="rounded qr-code" alt="" style="width: 100%;">
+        </div>
+    </section>
+   
+    <div class="progress"></div>
+
+    <script src="shower/shower.js"></script>
+    <script src="./lib/highlight/highlight.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- Copyright © 2024 Roma Akhmadullin -->
+
+    <script>
+        const goButtons = Array.from(document.querySelectorAll('[data-go-button]'));
+        goButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const connectedIframesIds = button.getAttribute('data-connected-iframes').split(',');
+                connectedIframesIds.forEach((id) => {
+                    const el = document.querySelector(`#${id}`);
+                    el.setAttribute('src', '');
+                    requestAnimationFrame(() => {
+                        el.setAttribute('src', el.getAttribute('data-src'));
+                        el.onload = () => {
+                            el.contentWindow.postMessage('go');
+                        };
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        const continueButtons = Array.from(document.querySelectorAll('[data-continue-button]'));
+        continueButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                button.setAttribute('disabled', 'true');
+                const connectedIframesIds = button.getAttribute('data-connected-iframes').split(',');
+                connectedIframesIds.forEach((id) => {
+                    const el = document.querySelector(`#${id}`);
+                    el.contentWindow.postMessage('goNext');
+                });
+            });
+        });
+    </script>
+
+    <script>
+        window.addEventListener('message', (e) => {
+            if (e.data.type === 'change-demo-step') {
+                const exampleTitleEl = document.querySelector(`#${e.data.example}_title`);
+
+                if (!exampleTitleEl) {
+                    return;
+                }
+
+                exampleTitleEl.textContent = e.data.title;
+            }
+        });
+    </script>
+</body>
+</html>

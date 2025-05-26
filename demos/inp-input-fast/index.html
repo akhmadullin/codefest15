@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демка про INP</title>
+    <link rel="stylesheet" href="../../lib/pressed-key-shower/styles.css">
+</head>
+<body>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: rgb(40, 42, 46);
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .block {
+            background-color: rgb(77, 81, 87);
+            border-radius: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .block_for-grid {
+            height: 50px;
+        }
+
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__circle {
+            border-radius: 50%;
+            flex: 0 0 30px;
+            height: 30px;
+            background-color: rgb(77, 81, 87);
+        }
+
+        .logo__text {
+            min-width: 50px;
+            max-width: 75px;
+            flex: 1 1 75px;
+            height: 20px;
+            background-color: rgb(77, 81, 87);
+            border-radius: 6px;
+        }
+
+        .burger {
+            flex-shrink: 0;
+            display: block;
+            position: relative;
+            border: none;
+            background: transparent;
+            width: 30px;
+            height: 26px;
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            left: 0;
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 4px;
+            border-radius: 10px;
+            background: rgb(77, 81, 87);
+        }
+
+        .burger::before {
+            top: 0;
+            box-shadow: 0 11px 0 rgb(77, 81, 87);
+        }
+
+        .burger::after {
+            bottom: 0;
+        }
+
+        .input {
+            box-sizing: border-box;
+            padding: 6px 12px;
+            width: 100%;
+            border: 2px solid #eeeeee;
+            border-radius: 6px;
+            background-color: rgb(77, 81, 87);
+            font-size: inherit;
+        }
+
+        .card {
+            border: 3px solid rgb(77, 81, 87);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .card__header {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .card__header__block {
+            height: 40px; 
+            flex: 1 0 auto;
+        }
+
+        .image {
+            width: 40px;
+            height: 40px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes preloaderAnimation {
+            100% {
+                background-position: 0%;
+            }
+            0% {
+                background-position: 100%;
+            }
+        }
+
+        .preloader {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preloaderAnimatedElement {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(
+                140deg,
+                rgba(40, 42, 46, 0) 0%,
+                rgba(40, 42, 46, 0) 30%,
+                rgba(40, 42, 46, 0.6) 42%,
+                rgba(40, 42, 46, 0.9) 50%,
+                rgba(40, 42, 46, 0.6) 58%,
+                rgba(40, 42, 46, 0) 75%,
+                rgba(40, 42, 46, 0) 100%
+            );
+            background-size: 600% 200%;
+            animation: preloaderAnimation 1.8s ease-in infinite;
+        }
+    </style>
+    <div class="container">
+        <div class="header mb-20">
+            <div class="logo">
+                <div class="logo__circle"></div>
+                <div class="logo__text"></div>
+            </div>
+            <div class="burger"></div>
+        </div>
+        <div class="block mb-20" style="height: 30px"></div>
+        <div class="mb-10">
+            <label for="search-input">Поисковый запрос</label>
+        </div>
+        <input type="text" placeholder="Например, попугаи" id="search-input" autocomplete="off" class="input mb-20" />
+        <div id="search-results-title" class="hidden mb-20">
+            Результаты поиска
+        </div>
+        <div id="preloader" class="block preloader hidden mb-20" style="height: 146px;">
+            <div class="preloaderAnimatedElement"></div>
+        </div>
+        <div id="search-results" class="cards">
+        </div>
+    </div>
+    <script src="../../lib/pressed-key-shower/index.js"></script>
+    <script>
+        const pressedKeyShower = new PressedKeyShower();
+        pressedKeyShower.watch();
+    </script>
+    <script>
+        function throttle(func, delay) {
+            let isThrottled = false;
+            let savedArgs;
+            let savedThis;
+
+            function wrapper(tthis) {
+                if (isThrottled) {
+                    savedArgs = arguments;
+                    savedThis = tthis;
+                    return;
+                }
+
+                func.apply(tthis, arguments);
+
+                isThrottled = true;
+
+                setTimeout(() => {
+                    isThrottled = false;
+                    if (savedArgs) {
+                        wrapper.apply(savedThis, savedArgs);
+                        savedArgs = null;
+                        savedThis = null;
+                    }
+                }, delay);
+            }
+
+            return wrapper;
+        }
+
+        function debounce(callee, timeoutMs) {
+            return function perform(...args) {
+                let previousCall = this.lastCall
+
+                this.lastCall = Date.now()
+
+                if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+                clearTimeout(this.lastCallTimer)
+                }
+
+                this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
+            }
+        }
+
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        const inputField = document.querySelector('#search-input');
+
+        const searchResults = document.querySelector('#search-results');
+
+        const searchResultsTitle = document.querySelector('#search-results-title');
+
+        const preloader = document.querySelector('#preloader');
+
+        const resetSearchResults = () => {
+            if (!searchResults) {
+                return;
+            }
+            searchResults.innerHTML = '';
+        };
+
+        const renderSearchResults = () => {
+            if (!searchResults) {
+                return;
+            }
+
+            if (inputField.value.trim().length === 0) {
+                return;
+            }
+
+            let result = ``;
+
+            Array.from({length: getRandomInt(3) + 1}).forEach(() => {
+                result += `
+                    <div class="card mb-20">
+                        <div class="card__header mb-10">
+                            <img src="./images/image.png" class="image" />
+                            <div class="block card__header__block"></div>
+                        </div>
+                        <div class="block mb-10" style="height: 20px"></div>
+                        <div class="block" style="height: 20px"></div>
+                    </div>
+                `
+            });
+
+            searchResults.innerHTML = result;
+            hidePreloader();
+        };
+
+        const renderSearchResultsDebounced = debounce(renderSearchResults, 600);
+
+        const showSearchResultTitle = () => {
+            if (!searchResultsTitle) {
+                return;
+            }
+            searchResultsTitle.classList.remove('hidden');
+        };
+
+        const hideSearchResultTitle = () => {
+            if (!searchResultsTitle) {
+                return;
+            }
+            searchResultsTitle.classList.add('hidden');
+        };
+
+        const showPreloader = () => {
+            if (!preloader) {
+                return;
+            }
+            preloader.classList.remove('hidden');
+        };
+
+        const hidePreloader = () => {
+            if (!preloader) {
+                return;
+            }
+            preloader.classList.add('hidden');
+        };
+
+        inputField?.addEventListener('input', (e) => {
+            if (e.target.value.trim().length === 0) {
+                hideSearchResultTitle();
+                hidePreloader();
+                resetSearchResults();
+                return;
+            }
+
+            showSearchResultTitle();
+            resetSearchResults();
+            showPreloader();
+
+            renderSearchResultsDebounced();
+        });
+    </script>
+</body>
+</html>
