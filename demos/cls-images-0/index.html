@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демка с CLS из-за картинок</title>
+    <link rel="stylesheet" href="../../lib/page-renderer/styles.css">
+</head>
+<body>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(40, 42, 46);
+        }
+
+        .container {
+            padding: 30px 20px 20px;
+        }
+
+        .block {
+            background-color: rgb(77, 81, 87);
+            border-radius: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .block_for-grid {
+            height: 50px;
+        }
+
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__circle {
+            border-radius: 50%;
+            flex: 0 0 30px;
+            height: 30px;
+            background-color: rgb(77, 81, 87);
+        }
+
+        .logo__text {
+            min-width: 50px;
+            max-width: 75px;
+            flex: 1 1 75px;
+            height: 20px;
+            background-color: rgb(77, 81, 87);
+            border-radius: 6px;
+        }
+
+        .burger {
+            flex-shrink: 0;
+            display: block;
+            position: relative;
+            border: none;
+            background: transparent;
+            width: 30px;
+            height: 26px;
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            left: 0;
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 4px;
+            border-radius: 10px;
+            background: rgb(77, 81, 87);
+        }
+
+        .burger::before {
+            top: 0;
+            box-shadow: 0 11px 0 rgb(77, 81, 87);
+        }
+
+        .burger::after {
+            bottom: 0;
+        }
+
+        .image {
+            width: 60px;
+            height: 60px;
+        }
+
+        .image_hidden {
+            display: none;
+        }
+
+        .card {
+            border: 3px solid rgb(77, 81, 87);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .card__header {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .card__header__block {
+            height: 30px;
+            flex: 1 0 auto;
+        }
+    </style>
+    <div id="page-container" class="container"></div>
+    <script src="../../lib/page-renderer/index.js"></script>
+    <script>
+        const root = document.querySelector('#page-container');
+        const chunksToRender = [
+            {
+                html: `
+                    <div class="header mb-20">
+                        <div class="logo">
+                            <div class="logo__circle"></div>
+                            <div class="logo__text"></div>
+                        </div>
+                        <div class="burger"></div>
+                    </div>
+                    <div class="card mb-20">
+                        <div class="card__header mb-10">
+                            <img src="./images/cat.svg" id="cat" class="image image_hidden" />
+                            <div class="block card__header__block"></div>
+                        </div>
+                        <div class="block" style="height: 20px"></div>
+                    </div>
+                    <div class="card mb-20">
+                        <div class="card__header mb-10">
+                            <img src="./images/bird.svg" id="bird" class="image image_hidden" />
+                            <div class="block card__header__block"></div>
+                        </div>
+                        <div class="block" style="height: 20px"></div>
+                    </div>
+                    <div class="card mb-20">
+                        <div class="card__header mb-10">
+                            <img src="./images/cow-or-dog.svg" id="cow" class="image image_hidden" />
+                            <div class="block card__header__block"></div>
+                        </div>
+                        <div class="block" style="height: 20px"></div>
+                    </div>
+                    <div class="block mb-20" style="height: 100px;"></div>
+                    <div class="grid mb-20">
+                        <div class="block block_for-grid"></div>
+                        <div class="block block_for-grid"></div>
+                        <div class="block block_for-grid"></div>
+                        <div class="block block_for-grid"></div>
+                        <div class="block block_for-grid"></div>
+                        <div class="block block_for-grid"></div>
+                    </div>
+                    <div class="block mb-20" style="height: 30px"></div>
+                    <div class="block mb-20" style="height: 100px;"></div>
+                    <div class="block mb-20" style="height: 30px"></div>
+                    <div class="block" style="height: 100px;"></div>
+                `,
+                delay: 200,
+                progressValue: 62,
+            },
+        ];
+        const pageRenderer = new PageRenderer(root, chunksToRender);
+        pageRenderer.render();
+    </script>
+</body>
+</html>

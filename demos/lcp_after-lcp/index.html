@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демка LCP</title>
+    <link rel="stylesheet" href="../../lib/page-renderer/styles.css">
+</head>
+<body>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(40, 42, 46);
+        }
+
+        .container {
+            padding: 30px 20px 20px;
+        }
+
+        .block {
+            background-color: rgb(77, 81, 87);
+            border-radius: 16px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo__circle {
+            border-radius: 50%;
+            flex: 0 0 30px;
+            height: 30px;
+            background-color: rgb(77, 81, 87);
+        }
+
+        .logo__text {
+            min-width: 50px;
+            max-width: 75px;
+            flex: 1 1 75px;
+            height: 20px;
+            background-color: rgb(77, 81, 87);
+            border-radius: 6px;
+        }
+
+        .burger {
+            flex-shrink: 0;
+            display: block;
+            position: relative;
+            border: none;
+            background: transparent;
+            width: 30px;
+            height: 26px;
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            left: 0;
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 4px;
+            border-radius: 10px;
+            background: rgb(77, 81, 87);
+        }
+
+        .burger::before {
+            top: 0;
+            box-shadow: 0 11px 0 rgb(77, 81, 87);
+        }
+
+        .burger::after {
+            bottom: 0;
+        }
+
+        .image-container {
+            height: 100px;
+            margin: 20px 0;
+        }
+
+        .image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+        }
+
+        .thumbnail {
+            height: 50px;
+            flex: 1 0 30px;
+            border: 3px solid rgb(77, 81, 87);
+            border-radius: 6px;
+            padding: 5px;
+        }
+
+        @media (max-width: 320px) {
+            .thumbnail { 
+                height: 30px;
+            }
+        }
+
+        .thumbnail__image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            grid-auto-rows: 25px;
+            gap: 10px 20px;
+        }
+
+        .table-grid .block {
+            height: 100%;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+    </style>
+
+
+    <div id="page-container" class="container"></div>
+    <script src="../../lib/page-renderer/index.js"></script>
+    <script>
+        const root = document.querySelector('#page-container');
+        const chunksToRender = [
+            {
+                html: ``,
+                delay: 1500,
+                progressValue: 13,
+            },
+            {
+                html: `
+                    <div class="header mb-20">
+                        <div class="logo">
+                            <div class="logo__circle"></div>
+                            <div class="logo__text"></div>
+                        </div>
+                        <div class="burger"></div>
+                    </div>
+                    <div class="block mb-20" style="height: 30px"></div>
+                    <div class="image-container">
+                        <img src="./images/car.svg" class="image hidden" id="main-image" alt="">
+                    </div>
+                    <div class="thumbnails mb-20">
+                        <div class="thumbnail hidden">
+                            <img src="./images/car-1.svg" class="thumbnail__image hidden" />
+                        </div>
+                        <div class="thumbnail hidden">
+                            <img src="./images/car-2.svg" class="thumbnail__image hidden" />
+                        </div>
+                        <div class="thumbnail hidden">
+                            <img src="./images/car-6.svg" class="thumbnail__image hidden" />
+                        </div>
+                        <div class="thumbnail hidden">
+                            <img src="./images/car-5.svg" class="thumbnail__image hidden" />
+                        </div>
+                    </div>
+                    <div class="price-row mb-20">
+                        <div class="block" style="width: 60%; height: 50px;"></div>
+                        <div class="block" style="width: 30%; height: 30px;"></div>
+                    </div>
+                    <div class="table-grid mb-20">
+                        <div>
+                            <div class="block" style="width: 100%;"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 80%"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 80%;"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 95%"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 90%;"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 50%"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 80%;"></div>
+                        </div>
+                        <div>
+                            <div class="block" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="block mb-20" style="height: 100px;"></div>
+                    <div class="block mb-20" style="height: 30px"></div>
+                    <div class="block mb-20" style="height: 100px;"></div>
+                    <div class="block mb-20" style="height: 30px"></div>
+                    <div class="block" style="height: 100px;"></div>
+                `,
+                delay: 2000,
+                progressValue: 32,
+            },
+            {
+                html: '',
+                js: () => {
+                    const mainImage = document.querySelector('#main-image');
+                    mainImage?.classList.remove('hidden');
+                },
+                delay: 2500,
+                progressValue: 55,
+            },
+            {
+                html: '',
+                js: () => {
+                    const thumbnails = document.querySelectorAll('.thumbnail');
+                    console.log('thumbnails', thumbnails)
+                    thumbnails?.forEach((item) => {
+                        item?.classList.remove('hidden');
+                    })
+                },
+                delay: 1400,
+                progressValue: 63,
+            },
+            {
+                html: '',
+                js: () => {
+                    const thumbnails = document.querySelectorAll('.thumbnail__image');
+                    thumbnails[0].classList.remove('hidden');
+                },
+                delay: 900,
+                progressValue: 68,
+            },
+            {
+                html: '',
+                js: () => {
+                    const thumbnails = document.querySelectorAll('.thumbnail__image');
+                    thumbnails[2].classList.remove('hidden');
+                },
+                delay: 1200,
+                progressValue: 74,
+            },
+            {
+                html: '',
+                js: () => {
+                    const thumbnails = document.querySelectorAll('.thumbnail__image');
+                    thumbnails[1].classList.remove('hidden');
+                },
+                delay: 800,
+                progressValue: 78,
+            },
+            {
+                html: '',
+                js: () => {
+                    const thumbnails = document.querySelectorAll('.thumbnail__image');
+                    thumbnails[3].classList.remove('hidden');
+                },
+                delay: 1400,
+                progressValue: 85,
+            },
+            {
+                html: '',
+                delay: 950,
+                progressValue: 100,
+            },
+        ];
+        const pageRenderer = new PageRenderer(root, chunksToRender);
+        pageRenderer.render();
+    </script>
+</body>
+</html>
