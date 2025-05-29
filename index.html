@@ -16,6 +16,13 @@
 
         @font-face {
             font-family: 'Montserrat';
+            font-weight: 600;
+            src: url(./fonts/Montserrat/Montserrat-SemiBold.woff2)
+                format("woff2");
+        }
+
+        @font-face {
+            font-family: 'Montserrat';
             font-weight: 700;
             src: url(./fonts/Montserrat/Montserrat-Bold.woff2)
                 format("woff2");
@@ -243,6 +250,10 @@
             opacity: 0.4;
         }
 
+        .muted-little {
+            opacity: 0.7;
+        }
+
         .bold {
             font-weight: bold;
         }
@@ -261,7 +272,7 @@
         }
 
         table tbody tr td:first-child {
-            font-size: 0.9em;
+            font-size: 1em;
         }
 
         .slide td.td-with-icon {
@@ -277,7 +288,7 @@
         }
 
         .scheme-rum {
-            width: 80%;
+            width: 88%;
         }
 
         .scheme-lib-rum {
@@ -310,6 +321,11 @@
             flex: 0 0 75px;
             font-weight: bold;
         }
+
+        .metric-list-item__name-full {
+            color: #999999;
+            font-weight: 600;
+        } 
 
         .rounded {
             border-radius: 16px;
@@ -900,7 +916,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/screenshot-lighthouse-3.png" class="place" alt="" style="height: 90%;">
+        <img src="./images/screenshot-lighthouse-3.png" class="place" alt="" style="width: 88%;">
     </section>
 
     <section class="slide">
@@ -909,15 +925,15 @@
     </section>
 
     <section class="slide">
-        <img src="./images/ps-score-2.png" class="place light-image" alt="" style="height: 80%; border-radius: 16px;">
+        <img src="./images/ps-score-2.png" class="place light-image rounded" alt="" style="height: 85%;">
     </section>
 
     <section class="slide">
-        <img src="./images/ps-crux.png" class="place light-image" alt="" style="height: 70%; border-radius: 16px;">
+        <img src="./images/ps-crux.png" class="place light-image rounded" alt="" style="height: 80%;">
     </section>
 
     <section class="slide">
-        <img src="./images/ps-recommendations-3.png" class="place light-image" alt="" style="width: 70%; border-radius: 16px;">
+        <img src="./images/ps-recommendations-3.png" class="place light-image rounded" alt="" style="width: 90%;">
     </section>
 
     <section class="slide">
@@ -1403,20 +1419,20 @@
 
     <section class="slide">
         <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
     </section>
 
     <section class="slide">
         <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
-        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 26%; right: 10%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 26%; right: 10%;">
     </section>
 
     <section class="slide">
         <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 25%;">
-        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 26%; right: 10%;">
-        <img src="./images/arrow-loading-experience-by-page.svg" class="place b" alt="" style="bottom: 39%; height: 50px; left: 71%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 26%; right: 10%;">
+        <img src="./images/arrow-loading-experience-by-page.svg" class="place b" alt="" style="bottom: 38%; height: 54px; left: 71%;">
     </section>
 
     <section class="slide">
@@ -1425,25 +1441,25 @@
 
     <section class="slide">
         <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 33%;">
-        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 33%; right: 10%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; left: 34%; top: 33%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 33%; right: 10%;">
     </section>
 
     <section class="slide">
         <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 164px; left: 34%; top: 33%;">
-        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 176px; top: 33%; right: 10%;">
-        <img src="./images/arrow-separate-page-2.svg" class="place l" alt="" style="width: 310px; top: 18%; left: 18%;">
+        <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; left: 34%; top: 33%;">
+        <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 33%; right: 10%;">
+        <img src="./images/arrow-separate-page-2.svg" class="place l" alt="" style="width: 330px; top: 18.5%; left: 18%;">
     </section>
 
     <section class="slide">
         <img src="./images/psi-debug-all-audits.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-compare.svg" class="place t" alt="" style="height: 38px;top: 6%;">
+        <img src="./images/arrow-compare.svg" class="place t" alt="" style="height: 45px;top: 6%;">
     </section>
    
     <section class="slide">
         <img src="./images/psi-debug-single-audit.png" class="place rounded" alt="" style="width: 90%;">
-        <img src="./images/arrow-single-metric.svg" class="place t" alt="" style="height: 38px;top: 11%;left: 63%;">
+        <img src="./images/arrow-single-metric.svg" class="place t" alt="" style="height: 45px;top: 11%;left: 63%;">
     </section>
 
     <section class="slide">
@@ -1759,34 +1775,34 @@
         <img src="./images/upd-scheme-rum-2.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-3.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-3.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-4.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-4.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-5.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-5.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-6.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-6.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-7.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-7.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-8.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-8.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-9.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-9.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-10.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-10.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-11.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-11.svg" class="place scheme-rum" alt="">
     </section>
     <section class="slide">
-        <img src="./images/upd-scheme-rum-12.svg" class="place scheme-rum" alt=""">
+        <img src="./images/upd-scheme-rum-12.svg" class="place scheme-rum" alt="">
     </section>
 
     <section class="slide">
@@ -1947,7 +1963,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/38-popugaev-2-x2.jpeg" class="place" alt="" style="height: 70%; border-radius: 20px;">
+        <img src="./images/38-popugaev-2-x2.jpeg" class="place light-image" alt="" style="height: 70%; border-radius: 20px;">
     </section>
 
     <section class="slide">
@@ -1960,61 +1976,61 @@
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="metric-list-item__name-full">Time To First Byte</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">TTFB</span><span class="metric-list-item__name-full muted-little">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="metric-list-item__name-full">First Contentful Paint</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">TTFB</span><span class="metric-list-item__name-full muted-little">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">FCP</span><span class="metric-list-item__name-full muted-little">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="metric-list-item__name-full">Largest Contentful Paint</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">TTFB</span><span class="metric-list-item__name-full muted-little">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">FCP</span><span class="metric-list-item__name-full muted-little">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">LCP</span><span class="metric-list-item__name-full muted-little">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="metric-list-item__name-full">Cumulative Layout Shift</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
-            <li><span class="metric-list-item muted"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">TTFB</span><span class="metric-list-item__name-full muted-little">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">FCP</span><span class="metric-list-item__name-full muted-little">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">LCP</span><span class="metric-list-item__name-full muted-little">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short muted">CLS</span><span class="metric-list-item__name-full muted-little">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="metric-list-item__name-full">Interaction to Next Paint</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;">Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="metric-list-item__name-full">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="metric-list-item__name-full">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">LCP</span><span class="metric-list-item__name-full">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">CLS</span><span class="metric-list-item__name-full">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">INP</span><span class="metric-list-item__name-full">Interaction to Next Paint</span></span></li>
         </ul>
     </section>
     <section class="slide">
         <h3 class="without-margins" style="margin-bottom: 10px;"><span class="accented">Core</span> Web Vitals</h3>
         <ul>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="muted">Time To First Byte</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="muted">First Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">LCP</span><span class="muted">Largest Contentful Paint</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">CLS</span><span class="muted">Cumulative Layout Shift</span></span></li>
-            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">INP</span><span class="muted">Interaction to Next Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">TTFB</span><span class="metric-list-item__name-full">Time To First Byte</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short">FCP</span><span class="metric-list-item__name-full">First Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">LCP</span><span class="metric-list-item__name-full">Largest Contentful Paint</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">CLS</span><span class="metric-list-item__name-full">Cumulative Layout Shift</span></span></li>
+            <li><span class="metric-list-item"><span class="metric-list-item__name-short accented">INP</span><span class="metric-list-item__name-full">Interaction to Next Paint</span></span></li>
         </ul>
     </section>
 
@@ -2432,8 +2448,11 @@
     </section>
 
     <section class="slide">
-        <img src="./images/tg-channel-ava.png" class="place l rounded" alt="" style="width: 30%; left: 14%;">
-        <img src="./images/qr-code-to-tg-channel.svg" class="place r rounded qr-code" alt="" style="width: 22%; right: 14%;">
+        <img src="./images/tg-channel-ava-2.png" class="place l rounded" alt="" style="width: 35%; left: 10%;">
+        <div class="place r" style="width: 22%; right: 14%; top:45%">
+            <h4 class="end__subheading" style="text-align: center; margin-top: 0;">Подписаться</h4>
+            <img src="./images/qr-code-to-tg-channel.svg" class="rounded qr-code" alt="" style="width: 100%;">
+        </div>
         <a href="https://t.me/roma_akhmadullin" class="copyright">Рома вещает</a>
     </section>
 
