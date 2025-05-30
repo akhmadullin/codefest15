@@ -3,7 +3,7 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    border: 5px solid;
+    border: 7px solid;
     animation: 1.2s grow ease;
     inset: unset;
     background: unset;
@@ -23,7 +23,7 @@
 }
 
 .click-point_light {
-    border-color: #cdcdcd;
+    border-color: #32a3dc;
 }
 
 @keyframes grow {
