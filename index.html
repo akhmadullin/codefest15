@@ -86,12 +86,19 @@
             display: none;
         }
 
-        #intro {
+        /* #intro {
             background-color: #000;
-        }
+        } */
 
         #the-end {
             background-color: #011b3a;
+        }
+
+        .intro-bg {
+            background-color: #000;
+            position: absolute;
+            inset: 0;
+            filter: brightness(1.5);
         }
 
         .intro-image {
@@ -100,6 +107,7 @@
             position: absolute;
             right: -16%;
             bottom: 0;
+            filter: brightness(1.5);
         }
 
         .intro-image-2 {
@@ -396,6 +404,7 @@
     </header>
 
     <section id="intro" class="slide">
+        <div class="intro-bg"></div>
         <img src="./images/parrot4x.jpeg" class="intro-image" />
         <div class="intro-text">
             <h2 style="margin-top: 270px;margin-bottom: 0; text-transform: uppercase;">Web Vitals</h2>
@@ -1016,7 +1025,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/crux-logo.png" class="place" alt="" style="height: 35%;">
+        <img src="./images/crux-logo.png" class="place light-image" alt="" style="height: 35%;">
         <a href="https://developer.chrome.com/docs/crux/methodology/tools#tool-gsc" class="copyright">Chrome UX Report</a>
     </section>
 
