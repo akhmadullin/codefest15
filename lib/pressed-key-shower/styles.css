@@ -2,9 +2,9 @@
     padding: 10px;
     font-size: 1.2em;
     border-radius: 6px;
-    border: 4px solid #666;
-    color: #333;
-    background-color: hsl(0, 0%, 94%);
+    border: 4px solid #32a3dc;
+    color: #222;
+    background-color: #ffffff;
     position: fixed;
     inset: unset;
     /* top: 80px;
@@ -22,7 +22,7 @@
 }
 
 .pressed-key__animated_point {
-    border: 4px solid #666;
+    border: 4px solid #32a3dc;
     border-radius: 6px;
     inset: 0;
     /* top: 50%;

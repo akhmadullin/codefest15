@@ -38,6 +38,7 @@
             --slide-ratio: calc(16 / 9);
             --color-additional: #32a3dc;
             --color-black: #000;
+            --color-fill: rgb(246 249 255 / 10%);
         }
 
         .slide {
@@ -86,12 +87,15 @@
             display: none;
         }
 
-        #intro {
-            background-color: #000;
-        }
-
         #the-end {
             background-color: #011b3a;
+        }
+
+        .intro-bg {
+            background-color: #000;
+            position: absolute;
+            inset: 0;
+            filter: brightness(1.5);
         }
 
         .intro-image {
@@ -100,6 +104,7 @@
             position: absolute;
             right: -16%;
             bottom: 0;
+            filter: brightness(1.5);
         }
 
         .intro-image-2 {
@@ -164,7 +169,7 @@
         .mobile-device-iframe {
             height: 100%;
             border-radius: 20px;
-            background-color: rgb(40, 42, 46);
+            background-color: #3a3d42;
         }
 
         .metric-border-values-image {
@@ -179,7 +184,7 @@
             padding: 6px 12px;
             border: none;
             border-radius: 6px;
-            background-color: rgb(40, 42, 46);
+            background-color: #3a3d42;
             color: white;
             border: 2px solid #cdcdcd;
             cursor: pointer;
@@ -275,12 +280,21 @@
             font-size: 1em;
         }
 
+        .slide tr:not(:last-of-type) > * {
+            background-image: linear-gradient(to top, var(--color-line) 0.1em, transparent 0.1em);
+            background-repeat: repeat-x;
+        }
+
         .slide td.td-with-icon {
             text-align: center;
         }
 
         .light-image {
-            opacity: 0.9;
+            filter: brightness(0.9);
+        }
+
+        .dark-image {
+            filter: brightness(1.4) contrast(0.9);
         }
 
         .scheme-psi {
@@ -326,6 +340,10 @@
             color: #999999;
             font-weight: 600;
         } 
+
+        .round {
+            border-radius: 50%;
+        }
 
         .rounded {
             border-radius: 16px;
@@ -387,6 +405,7 @@
     </header>
 
     <section id="intro" class="slide">
+        <div class="intro-bg"></div>
         <img src="./images/parrot4x.jpeg" class="intro-image" />
         <div class="intro-text">
             <h2 style="margin-top: 270px;margin-bottom: 0; text-transform: uppercase;">Web Vitals</h2>
@@ -643,7 +662,7 @@
             <iframe src="./demos/lcp_after-lcp__1/index.html" frameborder="0" class="mobile-device-iframe"></iframe>
         </div>
         <img src="./images/timeline-start-ttfb-fcp-lcp-load.svg" class="place b" style="width: 95%; bottom: 10px;" alt="">
-        <img src="./images/web-vitals-3-arrows.svg" class="place b" style="height: 35%; bottom: 15%;" alt="">
+        <img src="./images/arrow-web-vitals-3-of-5-v2.svg" class="place b" style="height: 35%; bottom: 15%; left: 45%;" alt="">
     </section>
 
     <section class="slide">
@@ -899,7 +918,7 @@
 
     <section class="slide">
         <h2 class="place">Как считать?</h2>
-        <img src="./images/parrot-calculate.png" class="place b r" alt="" style="width: 250px;">
+        <img src="./images/parrot-calculate.png" class="place b r dark-image" alt="" style="width: 250px;">
     </section>
 
     <section class="slide">
@@ -916,7 +935,7 @@
 
     <section class="slide">
         <img src="./images/two-chairs-3.svg" class="place" alt="" style="height: 70%;">
-        <img src="./images/parrot-knife-mem.jpg" class="place" alt="" style="width: 150px; top: 29%; rotate: -8deg; left: 52%;">
+        <img src="./images/parrot-knife-mem.jpg" class="place dark-image" alt="" style="width: 150px; top: 29%; rotate: -8deg; left: 52%;">
     </section>
 
     <section class="slide">
@@ -929,11 +948,11 @@
     </section>
 
     <section class="slide">
-        <img src="./images/screenshot-lighthouse-3.png" class="place" alt="" style="width: 88%;">
+        <img src="./images/screenshot-lighthouse-3.png" class="place dark-image" alt="" style="width: 88%;">
     </section>
 
     <section class="slide">
-        <img src="./images/pagespeed-insights.svg" class="place" alt="" style="height: 30%;">
+        <img src="./images/pagespeed-insights.svg" class="place light-image" alt="" style="height: 30%;">
         <a href="https://pagespeed.web.dev/" class="copyright">PageSpeed Insights</a>
     </section>
 
@@ -950,7 +969,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/webpagetest-logo.png" class="place" alt="" style="height: 35%;">
+        <img src="./images/web-page-test-logo-light.jpg" class="place light-image round" alt="" style="height: 35%;">
         <a href="https://www.webpagetest.org/" class="copyright">WebPageTest</a>
     </section>
 
@@ -1019,7 +1038,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/crux-logo.png" class="place" alt="" style="height: 35%;">
+        <img src="./images/crux-logo.png" class="place light-image" alt="" style="height: 35%;">
         <a href="https://developer.chrome.com/docs/crux/methodology/tools#tool-gsc" class="copyright">Chrome UX Report</a>
     </section>
 
@@ -1427,51 +1446,51 @@
     </section>
 
     <section class="slide">
-        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
         <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 26%; right: 10%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-summary-dashboard-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-summary-dashboard-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; top: 24.7%; left: 34%;">
         <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 26%; right: 10%;">
         <img src="./images/arrow-loading-experience-by-page.svg" class="place b" alt="" style="bottom: 38%; height: 54px; left: 71%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; left: 34%; top: 33%;">
         <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 33%; right: 10%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-dashboard-debug-5.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-dashboard-debug-5.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-total-score-2.svg" class="place l" alt="" style="width: 180px; left: 34%; top: 33%;">
         <img src="./images/arrow-score-dynamic-2.svg" class="place r" alt="" style="width: 190px; top: 33%; right: 10%;">
         <img src="./images/arrow-separate-page-2.svg" class="place l" alt="" style="width: 330px; top: 18.5%; left: 18%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-debug-all-audits.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-debug-all-audits.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-compare.svg" class="place t" alt="" style="height: 45px;top: 6%;">
     </section>
    
     <section class="slide">
-        <img src="./images/psi-debug-single-audit.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-debug-single-audit.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-single-metric.svg" class="place t" alt="" style="height: 45px;top: 11%;left: 63%;">
     </section>
 
@@ -1493,7 +1512,6 @@
     </section>
 
     <section class="slide">
-        <!-- <pre class="place t" style="top: 3%;"> -->
         <pre class="place">
             <code class="language-javascript" style="font-size: 0.8em;">
                 // experiments.js
@@ -1638,42 +1656,42 @@
     </section>
 
     <section class="slide">
-        <img src="./images/psi-experiments-dashboard.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-dashboard.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
 
     <section class="slide">
-        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
         <img src="./images/arrow-no-gtm.svg" class="place" alt="" style="height: 71px; left: 68%; top: 38%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-score-2.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-score-2.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-no-js.svg" class="place" alt="" style="height: 50px; left: 24%; top: 35%;">
         <img src="./images/arrow-no-gtm.svg" class="place" alt="" style="height: 71px; left: 68%; top: 38%;">
         <img src="./images/arrow-js-and-gtm.svg" class="place" alt="" style="height: 85px; left: 44%; top: 68%;">
     </section>
    
     <section class="slide">
-        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
         <img src="./images/arrow-exp-to-all.svg" class="place t" alt="" style="height: 91px;top: 36%;left: 46%;">
     </section>
     <section class="slide">
-        <img src="./images/psi-experiments-dom-size.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/psi-experiments-dom-size.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-deploy-exp-4.svg" class="place b" alt="" style="height: 121px; bottom: 27%; left: 21%;">
         <img src="./images/arrow-exp-to-all.svg" class="place t" alt="" style="height: 91px;top: 36%;left: 46%;">
         <img src="./images/arrow-deleted.svg" class="place b r" alt="" style="height: 112px; bottom: 27%; right: 44%;">
@@ -1837,10 +1855,6 @@
         <img src="./images/upd-sheme-lib-rum-6.svg" class="place scheme-lib-rum" alt="">
     </section>
 
-    <!-- <section class="slide">
-        <img src="./images/upd-scheme-vector-0.svg" class="place scheme-vector" alt="">
-    </section> -->
-
     <section class="slide">
         <img src="./images/vector-logo.svg" class="place" alt="" style="width: 45%;">
         <a href="https://vector.dev/" class="copyright">Vector</a>
@@ -1863,29 +1877,29 @@
     </section>
 
     <section class="slide">
-        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-dashboard-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
     <section class="slide">
-        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-dashboard-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
     </section>
     <section class="slide">
-        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-dashboard-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
         <img src="./images/arrow-desktop-mobile.svg" class="place" alt="" style="width: 255px; top: 19.5%; left: 37%;">
     </section>
     <section class="slide">
-        <img src="./images/rum-dashboard-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-dashboard-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/arrow-page-type.svg" class="place" alt="" style="width: 202px; top: 7%; left: 20%;">
         <img src="./images/arrow-desktop-mobile.svg" class="place" alt="" style="width: 255px; top: 19.5%; left: 37%;">
         <img src="./images/arrow-different-percentiles.svg" class="place" alt="" style="width: 280px; top: 72%; left: 79%;">
     </section>
 
     <section class="slide">
-        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
     </section>
     <section class="slide">
-        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded" alt="" style="width: 90%;">
+        <img src="./images/rum-inp-bulls-list-auto-3.png" class="place rounded dark-image" alt="" style="width: 90%;">
         <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 29.5%;">
         <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 63%;">
         <img src="./images/dashed-vertical-line.svg" class="place" alt="" style="height: 62%; top: 55%; left: 71%;">
@@ -2461,7 +2475,7 @@
     </section>
 
     <section class="slide">
-        <img src="./images/tg-channel-ava-2.png" class="place l rounded" alt="" style="width: 35%; left: 10%;">
+        <img src="./images/tg-channel-ava-2.png" class="place l rounded dark-image" alt="" style="width: 35%; left: 10%;">
         <div class="place r" style="width: 22%; right: 14%; top:49%">
             <h4 class="end__subheading" style="text-align: center; margin-top: 0;">Подписаться</h4>
             <img src="./images/qr-code-to-tg-channel.svg" class="rounded qr-code" alt="" style="width: 100%;">
